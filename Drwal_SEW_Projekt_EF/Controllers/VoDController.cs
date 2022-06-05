@@ -35,7 +35,14 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         }
 
 
-        [HttpGet("Client/{id}")]
+        [HttpGet("/Movie/{Genre}")]
+        public ActionResult<List<Movie>> GetMovieWithGenre(string Genre)
+        {
+            Console.WriteLine($"Recieved request for: GetMovieWithGenre({Genre})...");
+            return Ok(context.Movie.Where(a=>a.Type.Contains(Genre)));
+        }
+
+        [HttpGet("/Client/{id}")]
         public ActionResult<Client> GetClientWithId(int id)
         {
             try
@@ -63,21 +70,69 @@ namespace Drwal_SEW_Projekt_EF.Controllers
 
         }
 
-        [HttpPost()]
-        public void Post([FromBody] string value)
+        [HttpPatch("/PatchClient/{clientId}")]
+        public ActionResult PatchClient([FromBody] Client meinNeuerClient, int clientId)
         {
+            Console.WriteLine($"Recieved Request for: PatchClient({clientId})");
+            Client clientToPatch = context.Client.FirstOrDefault(a=>a.ClientId == clientId);
+
+            if (clientToPatch != null)
+            {
+                clientToPatch = meinNeuerClient;
+                return Ok("Sucessfully Patched Client!");
+
+            }
+            else
+            {
+                return NotFound($"Client with Id {clientId} not found!");
+            }
+
         }
 
-        // PUT api/<VoDController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+
+        [HttpPost("/AddOrder/{clientId}")]
+        public ActionResult PostNewOrder([FromBody] Order myNewOrder, int clientId)
         {
+            var clientXorder = context.Client.Where(a=> a.ClientId.Equals(clientId)).FirstOrDefault();
+            Console.WriteLine($"Recieved request for:  PostNewOrder for ClientId {clientId}");
+            if (clientXorder == null)
+            {
+                return NotFound($"Client with Id {clientId} not found");
+            }
+            else
+            {
+
+                clientXorder.Order.Add(myNewOrder);
+                return Ok("Sucessfully Added Order!");  
+            }
+
+
         }
 
-        // DELETE api/<VoDController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+
+        [HttpPost("/AddClient")]
+        public ActionResult PostNewClient([FromBody] Client meinNeuerClient)
         {
+            context.Client.Add(meinNeuerClient);
+            return Ok("Sucessfully Added Client!");
+        }
+
+        
+        [HttpDelete("/DeleteClient/{id}")]
+        public ActionResult DeleteClient(int id)
+        {
+            try
+            {
+                Client a = context.Client.FirstOrDefault(a => a.ClientId == id);
+                context.Client.Remove(a);
+                return Ok("Sucessfully removed Client");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }
