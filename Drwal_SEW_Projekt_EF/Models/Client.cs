@@ -17,7 +17,7 @@ namespace Drwal_SEW_Projekt_EF.Models
         public string Lastname { get; set; }
         public string Address { get; set; }
         public string Postalcode { get; set; }
-        public DateOnly Dateofbirth { get; set; }
+        public DateTime Dateofbirth { get; set; }
 
         public virtual ICollection<Order> Order { get; set; }
     }

@@ -1,29 +1,69 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Drwal_SEW_Projekt_EF.Data;
+using Drwal_SEW_Projekt_EF.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Drwal_SEW_Projekt_EF.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/VoD")]
     [ApiController]
     public class VoDController : ControllerBase
     {
-        // GET: api/<VoDController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+
+        vod_drwalContext context = new vod_drwalContext();
+
+
+        [HttpGet("/Movie")]
+        public ActionResult<List<Movie>> GetAllMovies()
         {
-            return new string[] { "value1", "value2" };
+            Console.WriteLine("Recieved request for: GetAllMovies...");
+            return Ok(context.Movie);
         }
 
-        // GET api/<VoDController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("/Clients")]
+        public ActionResult<List<Client>> GetAllClients()
         {
-            return "value";
+            Console.WriteLine("Recieved request for: GetAllClients...");
+            return Ok(context.Client);
         }
 
-        // POST api/<VoDController>
-        [HttpPost]
+
+        [HttpGet("Client/{id}")]
+        public ActionResult<Client> GetClientWithId(int id)
+        {
+            try
+            {
+                Console.WriteLine($"Recieved request for: GetClientWithId({id})");
+                Client suspect = context.Client.FirstOrDefault(a => a.ClientId == id);
+                if (suspect!=null)
+                {
+                    Console.WriteLine("Client Found!");
+                    return Ok(suspect);
+                }
+
+                else
+                {
+                    Console.WriteLine("Client NOT Found!");
+                    return NotFound($"Client {id} not found...");
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        [HttpPost()]
         public void Post([FromBody] string value)
         {
         }

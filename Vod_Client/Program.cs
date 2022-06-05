@@ -12,7 +12,7 @@ namespace Vod_Client
         static async Task Main(string[] args)
         {
 
-            Uri uri = new Uri("https://localhost:7256/api/restaurant/%22);
+            Uri uri = new Uri("https://localhost:7136/api/VoD");
 
             HttpClient client = new HttpClient();
             client.BaseAddress = uri;
