@@ -50,7 +50,7 @@
          "ObjectType": 3
       }
    ],
-   "UiHint": "vod_context",
+   "UiHint": "vod_drwalContext",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDbContextSplitting": false,

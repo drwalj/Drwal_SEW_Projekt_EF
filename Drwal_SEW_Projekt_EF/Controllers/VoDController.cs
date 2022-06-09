@@ -18,7 +18,6 @@ namespace Drwal_SEW_Projekt_EF.Controllers
     {
         public static vod_drwalContext context = new vod_drwalContext();
 
-
         [HttpGet("movies")]
         public ActionResult<List<Movie>> GetAllMovies()
         {
@@ -34,11 +33,17 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         }
 
 
-        [HttpGet("movie/{Genre}")]
+        [HttpGet("movies/{Genre}")]
         public ActionResult<List<Movie>> GetMovieWithGenre(string Genre)
         {
             Console.WriteLine($"Recieved request for: GetMovieWithGenre({Genre})...");
             return Ok(context.Movie.Where(a=>a.type.Contains(Genre)));
+        }
+        [HttpGet("movies/{title}")]
+        public ActionResult<List<Movie>> GetMovieWithTitle(string title)
+        {
+            Console.WriteLine($"Recieved request for: GetMovieWithGenre({title})...");
+            return Ok(context.Movie.Where(a => a.type.Contains(title)));
         }
 
         [HttpGet("clients/{id}")]
@@ -125,16 +130,18 @@ namespace Drwal_SEW_Projekt_EF.Controllers
                 return Ok("Sucessfully Added Order!");  
             }
 
-
         }
 
 
         [HttpPost("clients")]
-        public async Task<ActionResult> PostNewClient([FromBody] Client meinNeuerClient)
+        public async Task<ActionResult<int>> PostNewClient([FromBody] Client meinNeuerClient)
         {
+            Console.WriteLine($"Recieved Request for: PostNewClient");
+            meinNeuerClient.client_id = (context.Client.Select(a => a.client_id).Max()+1);
             context.Client.Add(meinNeuerClient);
             await context.SaveChangesAsync();
-            return Ok("Sucessfully Added Client!");
+            Console.WriteLine("Successfully posted new client!");
+            return Ok(context.Client.Where(a=>a.firstname ==meinNeuerClient.firstname && a.lastname==meinNeuerClient.lastname).Select(a=>a.client_id).FirstOrDefault());
         }
 
         

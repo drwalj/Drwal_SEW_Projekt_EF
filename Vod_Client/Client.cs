@@ -9,23 +9,5 @@ using System.Threading.Tasks;
 
 namespace Vod_Client
 {
-    internal class Client
-    {
-        static async Task Main(string[] args)
-        {
-            Console.Title = "VoD Console";
-            Console.BackgroundColor = ConsoleColor.Blue;
 
-            Uri uri = new Uri("https://localhost:7136/api/VoD");
-
-            HttpClient client = new HttpClient();
-            client.BaseAddress = uri;
-
-            JsonSerializerOptions options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-        }
-    }
 }

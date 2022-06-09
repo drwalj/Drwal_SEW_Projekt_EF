@@ -24,12 +24,11 @@ namespace VodLib.models
         [Required]
         [StringLength(40)]
         public string lastname { get; set; }
-        [Required]
         [StringLength(100)]
         public string address { get; set; }
         [StringLength(20)]
         public string postalcode { get; set; }
-        public DateTime dateofbirth { get; set; }
+        public DateTime? dateofbirth { get; set; }
 
         [InverseProperty("client")]
         public virtual ICollection<Order> Order { get; set; }
