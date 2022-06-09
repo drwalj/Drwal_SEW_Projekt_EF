@@ -1,0 +1,71 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "vod_drwalContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": true,
+   "ModelNamespace": null,
+   "OutputContextPath": "data",
+   "OutputPath": "models",
+   "ProjectRootNamespace": "VodLib",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "public.Client",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.Actor",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.Movie",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.includes",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.Employee",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.Subscription",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.Order",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.materialized_megamoviesforkids",
+         "ObjectType": 3
+      },
+      {
+         "Name": "public.view_allclientsover18",
+         "ObjectType": 3
+      }
+   ],
+   "UiHint": "vod_context",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}

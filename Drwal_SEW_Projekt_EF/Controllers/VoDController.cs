@@ -1,33 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Drwal_SEW_Projekt_EF.Data;
-using Drwal_SEW_Projekt_EF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using VodLib.data;
+using VodLib.models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Drwal_SEW_Projekt_EF.Controllers
 {
     [Route("api/VoD")]
     [ApiController]
+
     public class VoDController : ControllerBase
     {
+        public static vod_drwalContext context = new vod_drwalContext();
 
-        vod_drwalContext context = new vod_drwalContext();
 
-
-        [HttpGet("/Movie")]
+        [HttpGet("movies")]
         public ActionResult<List<Movie>> GetAllMovies()
         {
             Console.WriteLine("Recieved request for: GetAllMovies...");
             return Ok(context.Movie);
         }
 
-        [HttpGet("/Clients")]
+        [HttpGet("clients")]
         public ActionResult<List<Client>> GetAllClients()
         {
             Console.WriteLine("Recieved request for: GetAllClients...");
@@ -35,50 +34,69 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         }
 
 
-        [HttpGet("/Movie/{Genre}")]
+        [HttpGet("movie/{Genre}")]
         public ActionResult<List<Movie>> GetMovieWithGenre(string Genre)
         {
             Console.WriteLine($"Recieved request for: GetMovieWithGenre({Genre})...");
-            return Ok(context.Movie.Where(a=>a.Type.Contains(Genre)));
+            return Ok(context.Movie.Where(a=>a.type.Contains(Genre)));
         }
 
-        [HttpGet("/Client/{id}")]
+        [HttpGet("clients/{id}")]
         public ActionResult<Client> GetClientWithId(int id)
         {
-            try
+            Console.WriteLine($"Recieved request for: GetClientWithId({id})");
+            Client suspect = context.Client.FirstOrDefault(a => a.client_id == id);
+            if (suspect!=null)
             {
-                Console.WriteLine($"Recieved request for: GetClientWithId({id})");
-                Client suspect = context.Client.FirstOrDefault(a => a.ClientId == id);
-                if (suspect!=null)
-                {
-                    Console.WriteLine("Client Found!");
-                    return Ok(suspect);
-                }
-
-                else
-                {
-                    Console.WriteLine("Client NOT Found!");
-                    return NotFound($"Client {id} not found...");
-                }
-
+                Console.WriteLine("Client Found!");
+                return Ok(suspect);
             }
-            catch (Exception e)
+
+            else
             {
-                Console.WriteLine(e);
-                throw;
+                Console.WriteLine("Client NOT Found!");
+                return NotFound($"Client {id} not found...");
             }
 
         }
 
-        [HttpPatch("/PatchClient/{clientId}")]
-        public ActionResult PatchClient([FromBody] Client meinNeuerClient, int clientId)
+
+        [HttpGet("clients/{firstname}/{lastname}")]
+        public ActionResult<Client> GetClientWithName(string firstname, string lastname)
+        {
+            Console.WriteLine($"Recieved request for: GetClientWithName({firstname},{lastname})");
+            Client suspect = context.Client.FirstOrDefault(a => a.firstname == firstname && a.lastname == lastname);
+            if (suspect != null)
+            {
+                Console.WriteLine("Client Found!");
+                return Ok(suspect);
+            }
+
+            else
+            {
+                Console.WriteLine("Client NOT Found!");
+                return NotFound($"Client {firstname} {lastname} not found...");
+            }
+
+        }
+
+        [HttpPatch("clients/{clientId}")]
+        public async Task<ActionResult> PatchClient([FromBody] Client meinNeuerClient, int clientId)
         {
             Console.WriteLine($"Recieved Request for: PatchClient({clientId})");
-            Client clientToPatch = context.Client.FirstOrDefault(a=>a.ClientId == clientId);
+            Client clientToPatch = context.Client.FirstOrDefault(a=>a.client_id == clientId);
 
             if (clientToPatch != null)
             {
-                clientToPatch = meinNeuerClient;
+                clientToPatch.client_id = clientId;
+                clientToPatch.firstname = meinNeuerClient.firstname;
+                clientToPatch.lastname = meinNeuerClient.lastname;
+                clientToPatch.address = meinNeuerClient.address;
+                clientToPatch.Order = meinNeuerClient.Order;
+                clientToPatch.dateofbirth = meinNeuerClient.dateofbirth;
+                clientToPatch.postalcode = meinNeuerClient.postalcode;
+
+                await context.SaveChangesAsync();
                 return Ok("Sucessfully Patched Client!");
 
             }
@@ -90,13 +108,14 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         }
 
 
-        [HttpPost("/AddOrder/{clientId}")]
-        public ActionResult PostNewOrder([FromBody] Order myNewOrder, int clientId)
+        [HttpPost("clients/{clientid}/orders")]
+        public async Task<ActionResult> PostNewOrder([FromBody] Order myNewOrder, int clientId)
         {
-            var clientXorder = context.Client.Where(a=> a.ClientId.Equals(clientId)).FirstOrDefault();
+            var clientXorder = context.Client.Where(a=> a.client_id.Equals(clientId)).FirstOrDefault();
             Console.WriteLine($"Recieved request for:  PostNewOrder for ClientId {clientId}");
             if (clientXorder == null)
             {
+                await context.SaveChangesAsync();
                 return NotFound($"Client with Id {clientId} not found");
             }
             else
@@ -110,22 +129,24 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         }
 
 
-        [HttpPost("/AddClient")]
-        public ActionResult PostNewClient([FromBody] Client meinNeuerClient)
+        [HttpPost("clients")]
+        public async Task<ActionResult> PostNewClient([FromBody] Client meinNeuerClient)
         {
             context.Client.Add(meinNeuerClient);
+            await context.SaveChangesAsync();
             return Ok("Sucessfully Added Client!");
         }
 
         
-        [HttpDelete("/DeleteClient/{id}")]
-        public ActionResult DeleteClient(int id)
+        [HttpDelete("clients/{id}")]
+        public async Task<ActionResult> DeleteClient(int id)
         {
             try
             {
-                Client a = context.Client.FirstOrDefault(a => a.ClientId == id);
-                context.Client.Remove(a);
-                return Ok("Sucessfully removed Client");
+                Client suspect = context.Client.FirstOrDefault(a => a.client_id == id);
+                context.Client.Remove(suspect);
+                await context.SaveChangesAsync();
+                return Ok("Sucessfully removed Client (he was removed on your behalf... he is gone now... no coming back... have you thought about his family?... what did you do?...)");
 
             }
             catch (Exception e)
