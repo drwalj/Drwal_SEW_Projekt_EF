@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -26,14 +27,25 @@ namespace WPF_Client
         {
             HttpResponseMessage response = await client.GetAsync($"{baseUri}clients/{firstname}/{lastname}");
 
-
             if (!response.IsSuccessStatusCode)
                 return new Client(){client_id = -404};              
             
             string content = await response.Content.ReadAsStringAsync();
-            Client suspect = JsonSerializer.Deserialize<Client>(content,options);
+            return JsonSerializer.Deserialize<Client>(content,options);
+        }
 
-            return suspect;
+        public static async Task<IEnumerable<Movie>> GetMoviesWithGenreAndTitleAsync(string title, string genre)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            response = await client.GetAsync($"{baseUri}movies/{genre}/{title}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Getting Movie with genre {genre} and title {title} went wrong");
+            }
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<IEnumerable<Movie>>(content, options);
 
         }
 
@@ -50,11 +62,37 @@ namespace WPF_Client
             if (!response.IsSuccessStatusCode)
                 return "-404";
 
-            string responsedecoded = await response.Content.ReadAsStringAsync();
-            
-
-            return responsedecoded;
+            return await response.Content.ReadAsStringAsync();
         }
+
+        public static async Task<IEnumerable<Movie>> GetAllMoviesAsync()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{baseUri}movies");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error getting all movies.");
+            }
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<IEnumerable<Movie>>(content, options);
+
+        }
+
+        /*   ---- Bin draufgekommen, dass ich das nicht brauche 
+        public static async Task<IEnumerable<Movie>> GetAllMoviesWithTitle(string title)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{baseUri}movies/{title}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error getting movie with tile {title}.");
+            }
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<IEnumerable<Movie>>(content, options);
+
+        }*/
 
     }
 }

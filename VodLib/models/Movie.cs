@@ -22,5 +22,10 @@ namespace VodLib.models
         [StringLength(20)]
         public string type { get; set; }
         public decimal duration { get; set; }
+
+        public override string ToString()
+        {
+            return $"{name} -- {type} -- length: {duration}h";
+        }
     }
 }

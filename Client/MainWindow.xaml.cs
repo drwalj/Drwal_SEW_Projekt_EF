@@ -23,5 +23,6 @@ namespace WPF_Client
             MainFrame.Content = new LoginPage(this);
         }
 
+
     }
 }

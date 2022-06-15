@@ -30,15 +30,13 @@ namespace WPF_Client
             MainWindowContext = window;
 
         }
-
-
         private async void Einloggen_Button(object sender, RoutedEventArgs e)
         {
             //einloggdaten sind firstname+lastname da ich keine passwörter in meiner datenbank speicher aber ich ein einlogg- feature machen wollte
             var result = await RestHelper.GetClientWithNameAsync(tbFirstname.Text, tbLastname.Text);
             if (result.client_id != -404)
             {
-                MainWindowContext.MainFrame.Content = new MainPage(MainWindowContext, result.client_id); // ich weiß, ich könnte den Client direkt einfach mitgeben, aber um REST kenntnisse zu beweisen, hole ich mir die Clientdaten dann durch die Id wenn ich sie brauche B)
+                MainWindowContext.MainFrame.Content = new MainPage(MainWindowContext, result.client_id); // ich könnte den Client direkt einfach mitgeben, aber um meine unglaublichen REST kenntnisse zu demonstrieren, hole ich mir die Clientdaten dann durch die Id später wenn ich sie brauche B)
             }
             else
             {
@@ -54,6 +52,7 @@ namespace WPF_Client
             if (result == "-404")
             {
                 Console.WriteLine("Fehler beim Posten neues Clients");
+                MessageBox.Show("Es besteht bereits ein Kunde mit diesem Vornamen :(");
             }
 
             else

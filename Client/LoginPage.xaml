@@ -12,7 +12,7 @@
         <Grid.Background >
             <ImageBrush ImageSource="Resources/Login_image.jpg" Stretch="UniformToFill" />
         </Grid.Background>
-        <Label Content="DRWALVOD" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Foreground="#FFE50914" FontWeight="Bold" FontSize="36" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" FontFamily="TINspireKeysChinese" Width="295" Background="{x:Null}">
+        <Label Content="DRWALVOD" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top" Foreground="#FFE50914" FontWeight="Bold" FontSize="36" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" FontFamily="TINspireKeysChinese" Width="295" Background="{x:Null}">
             <Label.Effect>
                 <DropShadowEffect/>
             </Label.Effect>

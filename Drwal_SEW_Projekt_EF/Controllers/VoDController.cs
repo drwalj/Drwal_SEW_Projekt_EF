@@ -33,17 +33,24 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         }
 
 
-        [HttpGet("movies/{Genre}")]
-        public ActionResult<List<Movie>> GetMovieWithGenre(string Genre)
+        [HttpGet("movies/{genre}/{title}")]
+        public ActionResult<List<Movie>> GetMoviesWithGenreAndTitle(string title, string genre)
         {
-            Console.WriteLine($"Recieved request for: GetMovieWithGenre({Genre})...");
-            return Ok(context.Movie.Where(a=>a.type.Contains(Genre)));
+            Console.WriteLine($"Recieved request for: GetMovieWithGenre({title}{genre})...");
+            if (String.IsNullOrWhiteSpace(title))
+                return Ok(context.Movie.Where(a=>a.type.Contains(genre)));
+
+            if (genre == "All")
+                return Ok(context.Movie.Where(a => a.name.Trim().ToLower().Contains(title.ToLower())));
+
+            return Ok(context.Movie.Where(a=>a.type.Contains(genre) && a.name.Trim().ToLower().Contains(title.ToLower())));
         }
-        [HttpGet("movies/{title}")]
-        public ActionResult<List<Movie>> GetMovieWithTitle(string title)
+
+        [HttpGet("movies/{genre}/")]
+        public ActionResult<List<Movie>> GetMovieWithGenre(string genre)
         {
-            Console.WriteLine($"Recieved request for: GetMovieWithGenre({title})...");
-            return Ok(context.Movie.Where(a => a.type.Contains(title)));
+            Console.WriteLine($"Recieved request for: GetMovieWithGenre({genre})...");
+            return Ok(context.Movie.Where(a => a.type == genre));
         }
 
         [HttpGet("clients/{id}")]
@@ -57,11 +64,9 @@ namespace Drwal_SEW_Projekt_EF.Controllers
                 return Ok(suspect);
             }
 
-            else
-            {
-                Console.WriteLine("Client NOT Found!");
-                return NotFound($"Client {id} not found...");
-            }
+            Console.WriteLine("Client NOT Found!");
+            return NotFound($"Client {id} not found...");
+            
 
         }
 
@@ -71,17 +76,16 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         {
             Console.WriteLine($"Recieved request for: GetClientWithName({firstname},{lastname})");
             Client suspect = context.Client.FirstOrDefault(a => a.firstname == firstname && a.lastname == lastname);
+
             if (suspect != null)
             {
                 Console.WriteLine("Client Found!");
                 return Ok(suspect);
             }
 
-            else
-            {
-                Console.WriteLine("Client NOT Found!");
-                return NotFound($"Client {firstname} {lastname} not found...");
-            }
+            Console.WriteLine("Client NOT Found!");
+            return NotFound($"Client {firstname} {lastname} not found...");
+            
 
         }
 
@@ -91,24 +95,22 @@ namespace Drwal_SEW_Projekt_EF.Controllers
             Console.WriteLine($"Recieved Request for: PatchClient({clientId})");
             Client clientToPatch = context.Client.FirstOrDefault(a=>a.client_id == clientId);
 
-            if (clientToPatch != null)
-            {
-                clientToPatch.client_id = clientId;
-                clientToPatch.firstname = meinNeuerClient.firstname;
-                clientToPatch.lastname = meinNeuerClient.lastname;
-                clientToPatch.address = meinNeuerClient.address;
-                clientToPatch.Order = meinNeuerClient.Order;
-                clientToPatch.dateofbirth = meinNeuerClient.dateofbirth;
-                clientToPatch.postalcode = meinNeuerClient.postalcode;
-
-                await context.SaveChangesAsync();
-                return Ok("Sucessfully Patched Client!");
-
-            }
-            else
+            if (clientToPatch == null)
             {
                 return NotFound($"Client with Id {clientId} not found!");
+
             }
+
+            clientToPatch.client_id = clientId;
+            clientToPatch.firstname = meinNeuerClient.firstname;
+            clientToPatch.lastname = meinNeuerClient.lastname;
+            clientToPatch.address = meinNeuerClient.address;
+            clientToPatch.Order = meinNeuerClient.Order;
+            clientToPatch.dateofbirth = meinNeuerClient.dateofbirth;
+            clientToPatch.postalcode = meinNeuerClient.postalcode;
+
+            await context.SaveChangesAsync();
+            return Ok("Sucessfully Patched Client!");
 
         }
 
@@ -123,12 +125,10 @@ namespace Drwal_SEW_Projekt_EF.Controllers
                 await context.SaveChangesAsync();
                 return NotFound($"Client with Id {clientId} not found");
             }
-            else
-            {
 
-                clientXorder.Order.Add(myNewOrder);
-                return Ok("Sucessfully Added Order!");  
-            }
+            clientXorder.Order.Add(myNewOrder);
+            return Ok("Sucessfully Added Order!");  
+            
 
         }
 
@@ -137,6 +137,12 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         public async Task<ActionResult<int>> PostNewClient([FromBody] Client meinNeuerClient)
         {
             Console.WriteLine($"Recieved Request for: PostNewClient");
+            var exists = context.Client.Where(a => a.firstname == meinNeuerClient.firstname).FirstOrDefault();
+            if (exists != default)
+            {
+                return NotFound("Nutzer mit diesem Vornamen existiert schon.");
+            }
+            
             meinNeuerClient.client_id = (context.Client.Select(a => a.client_id).Max()+1);
             context.Client.Add(meinNeuerClient);
             await context.SaveChangesAsync();
@@ -148,19 +154,18 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         [HttpDelete("clients/{id}")]
         public async Task<ActionResult> DeleteClient(int id)
         {
-            try
+            Client suspect = context.Client.FirstOrDefault(a => a.client_id == id);
+
+            if (suspect != default)
             {
-                Client suspect = context.Client.FirstOrDefault(a => a.client_id == id);
                 context.Client.Remove(suspect);
                 await context.SaveChangesAsync();
-                return Ok("Sucessfully removed Client (he was removed on your behalf... he is gone now... no coming back... have you thought about his family?... what did you do?...)");
+                return Ok("Sucessfully removed Client (he was removed on your behalf... he is gone now... no coming back... have you thought about his family?... why would you do that to them?...)");
 
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+
+            return NotFound("Client with that id doesnt exist");
+
         }
     }
 }
