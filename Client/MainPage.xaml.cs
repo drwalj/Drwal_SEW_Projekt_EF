@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -29,8 +30,6 @@ namespace WPF_Client
             InitializeComponent();
             MainWindowContext = window;
             CurrentUid = currentUID;
-            tbUserId.Text = currentUID.ToString();
-
         }
 
         enum GenreEnum
@@ -48,25 +47,28 @@ namespace WPF_Client
 
         private async void OnMainPageLoaded(object sender, RoutedEventArgs e)
         {
-            foreach (Movie m in await RestHelper.GetAllMoviesAsync())
+            try
             {
-                lb_Movies.Items.Add(m.ToString());
+                tb_firstname.Content = (await RestHelper.GetClientWithIDAsync(CurrentUid)).firstname;
+                cb_Genre.ItemsSource = Enum.GetValues(typeof(GenreEnum));
+                cb_Genre.SelectedIndex = 0;
+                tb_SearchMovie.Text = "Search...";
+                foreach (Movie m in await RestHelper.GetAllMoviesAsync())
+                {
+                    lb_Movies.Items.Add(m);
+                } 
             }
-            cb_Genre.ItemsSource = Enum.GetValues(typeof(GenreEnum));
-            cb_Genre.SelectedIndex = 0;
-            tb_SearchMovie.Text = "Search...";
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+
         }
 
         private async void btnUserSettings_Click(object sender, RoutedEventArgs e)
         {
-            if (tb_SearchMovie.Text != "" && tb_SearchMovie.Text != "Search...")
-            {
-                lb_Movies.Items.Clear();
-                foreach (Movie m in await RestHelper.GetMoviesWithGenreAndTitleAsync(tb_SearchMovie.Text.ToString(),cb_Genre.Text))
-                {
-                    lb_Movies.Items.Add(m.ToString());
-                }
-            }
+            MainWindowContext.MainFrame.Content = new UserSettingsPage(MainWindowContext, CurrentUid); 
+
         }
 
         private async void TextChanged(object sender, TextChangedEventArgs e)
@@ -75,9 +77,18 @@ namespace WPF_Client
             {
                 lb_Movies.Items.Clear();
 
-                if (tb_SearchMovie.Text != "Search..." && cb_Genre.Text != "")
+                if (tb_SearchMovie.Text == "" || String.IsNullOrEmpty(tb_SearchMovie.Text) || tb_SearchMovie.Text == null && cb_Genre.Text != "")
                 {
-                    foreach (Movie m in await RestHelper.GetMoviesWithGenreAndTitleAsync(tb_SearchMovie.Text.ToString(), cb_Genre.Text))
+                    foreach (Movie m in await RestHelper.GetMoviesWithGenreAndTitleAsync("", cb_Genre.Text))
+                    {
+                        lb_Movies.Items.Add(m.ToString());
+                    }
+                }
+
+                else if (tb_SearchMovie.Text != "Search..." && cb_Genre.Text != "")
+                {
+                    foreach (Movie m in await RestHelper.GetMoviesWithGenreAndTitleAsync(tb_SearchMovie.Text.ToString(),
+                                 cb_Genre.Text))
                     {
                         lb_Movies.Items.Add(m.ToString());
                     }
@@ -100,9 +111,11 @@ namespace WPF_Client
 
                 }
 
-                else if (tb_SearchMovie.Text == "" && cb_Genre.Text != "")
+                else if (tb_SearchMovie.Text == "" ||
+                         String.IsNullOrWhiteSpace(tb_SearchMovie.Text) && cb_Genre.Text != "")
                 {
-                    foreach (Movie m in await RestHelper.GetMoviesWithGenreAndTitleAsync(title: "", genre: cb_Genre.Text))
+                    foreach (Movie m in await RestHelper.GetMoviesWithGenreAndTitleAsync(title: "",
+                                 genre: cb_Genre.Text))
                     {
                         lb_Movies.Items.Add(m.ToString());
                     }
@@ -172,6 +185,17 @@ namespace WPF_Client
             {
                 Console.WriteLine(exception);
             }
+        }
+
+        private void btn_Subscriptions_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindowContext.MainFrame.Content = new SettingsPage(MainWindowContext, CurrentUid);
+
+        }
+
+        private void btn_watch_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

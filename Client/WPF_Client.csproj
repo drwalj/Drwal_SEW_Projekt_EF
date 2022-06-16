@@ -10,6 +10,9 @@
   <ItemGroup>
     <None Remove="Drwalvod-avatar.png" />
     <None Remove="Login_image.jpg" />
+    <None Remove="Resources\cat1.jpeg" />
+    <None Remove="Resources\cat2.jpeg" />
+    <None Remove="Resources\cat3.jpeg" />
     <None Remove="Resources\Drwalvod-avatar.png" />
     <None Remove="Resources\Login_image.jpg" />
   </ItemGroup>
@@ -21,6 +24,15 @@
   <ItemGroup>
     <Resource Include="Drwalvod-avatar.png" />
     <Resource Include="Login_image.jpg" />
+    <Resource Include="Resources\cat1.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\cat2.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\cat3.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Drwalvod-avatar.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

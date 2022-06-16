@@ -9,15 +9,38 @@
       Title="LoginPage">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="331*"/>
+            <ColumnDefinition Width="55*"/>
+            <ColumnDefinition Width="122*"/>
+            <ColumnDefinition Width="128*"/>
+            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="283*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="43*"/>
+            <RowDefinition Height="117*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="31*"/>
+            <RowDefinition Height="57*"/>
+            <RowDefinition Height="48*"/>
+            <RowDefinition Height="68*"/>
+            <RowDefinition Height="48*"/>
+            <RowDefinition Height="0*"/>
+        </Grid.RowDefinitions>
         <Grid.Background >
             <ImageBrush ImageSource="Resources/Login_image.jpg" Stretch="UniformToFill" />
         </Grid.Background>
-        <Label Content="DRWALVOD" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top" Foreground="#FFE50914" FontWeight="Bold" FontSize="36" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" FontFamily="TINspireKeysChinese" Width="295" Background="{x:Null}">
+        <Label Content="DRWALVOD" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="#FFE50914" FontWeight="Bold" FontSize="36" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" FontFamily="TINspireKeysChinese" Width="295" Background="{x:Null}" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="2">
             <Label.Effect>
                 <DropShadowEffect/>
             </Label.Effect>
         </Label>
-        <Grid Margin="329,46,287,46" Background="Black" Opacity="0.9" >
+        <Grid Margin="329,42,3,46" Background="Black" Opacity="0.9" Grid.RowSpan="9" Grid.ColumnSpan="6" Grid.Row="1" >
             <TextBox x:Name="tbFirstname" HorizontalAlignment="Center" Margin="0,116,0,0" TextWrapping="Wrap" Text="Firstname" VerticalAlignment="Top" Width="248" FontFamily="Bahnschrift Light" FontSize="22" FontWeight="Bold" Background="White" Foreground="Black" GotFocus="tbFirstname_Focus"/>
             <TextBox x:Name="tbLastname" HorizontalAlignment="Center" Margin="0,166,0,0" TextWrapping="Wrap" Text="Lastname" VerticalAlignment="Top" Width="248" FontFamily="Bahnschrift Light" FontSize="22" FontWeight="Bold" Foreground="Black" GotFocus="tbLastname_Focus"/>
             <TextBlock Margin="238,199,-23,92" >

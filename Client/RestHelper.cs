@@ -13,7 +13,7 @@ using VodLib.data;
 
 namespace WPF_Client
 {
-    internal class RestHelper
+    public class RestHelper
     {
         static Uri baseUri = new Uri("https://localhost:7136/api/vod/");
         static HttpClient client = new HttpClient();
@@ -34,6 +34,53 @@ namespace WPF_Client
             return JsonSerializer.Deserialize<Client>(content,options);
         }
 
+        public static async Task<Client> GetClientWithIDAsync(int id)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{baseUri}clients/{id}");
+
+            if (!response.IsSuccessStatusCode)
+                return new Client() { client_id = -404 };
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Client>(content, options);
+        }
+
+        public static async Task<IEnumerable<string>> GetAllPaymentMethodsAsync()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{baseUri}payments");
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Getting Payments went wrong");
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<IEnumerable<string>>(content, options);
+        }
+
+        public static async Task<IEnumerable<string>> GetAllDeliveryMethodsAsync()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{baseUri}deliveries");
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Getting Deliveries went wrong");
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<IEnumerable<string>>(content, options);
+        }
+
+
+        public static async Task<bool> PatchClientAsync(Client myClient, int id)
+        {
+            string json = JsonSerializer.Serialize(myClient);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync($"{baseUri}clients/patch/{id}", content);
+
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            return true;
+
+        }
+
         public static async Task<IEnumerable<Movie>> GetMoviesWithGenreAndTitleAsync(string title, string genre)
         {
             HttpResponseMessage response = new HttpResponseMessage();
@@ -46,6 +93,18 @@ namespace WPF_Client
 
             string content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<IEnumerable<Movie>>(content, options);
+
+        }
+
+        public static async Task<bool> DeleteAccountAsync(int id)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{baseUri}delete/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+            
+            return true;
 
         }
 
@@ -65,6 +124,18 @@ namespace WPF_Client
             return await response.Content.ReadAsStringAsync();
         }
 
+        public static async Task<bool> PostNewOrderAsync(Order myOrder, int id)
+        {
+            string json = JsonSerializer.Serialize(myOrder);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync($"{baseUri}clients/{id}/orders", content);
+
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            return true;
+        }
+
         public static async Task<IEnumerable<Movie>> GetAllMoviesAsync()
         {
             HttpResponseMessage response = await client.GetAsync($"{baseUri}movies");
@@ -79,20 +150,7 @@ namespace WPF_Client
 
         }
 
-        /*   ---- Bin draufgekommen, dass ich das nicht brauche 
-        public static async Task<IEnumerable<Movie>> GetAllMoviesWithTitle(string title)
-        {
-            HttpResponseMessage response = await client.GetAsync($"{baseUri}movies/{title}");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Error getting movie with tile {title}.");
-            }
-
-            string content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<IEnumerable<Movie>>(content, options);
-
-        }*/
+        
 
     }
 }

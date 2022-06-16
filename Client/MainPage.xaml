@@ -9,8 +9,24 @@
       Title="MainPage">
 
     <Grid Loaded="OnMainPageLoaded">
-        <Rectangle Fill="Black" HorizontalAlignment="Center" Height="90" Stroke="Black" VerticalAlignment="Top" Width="980"/>
-        <Rectangle HorizontalAlignment="Center" Height="360" Margin="0,90,0,0" Stroke="Black" VerticalAlignment="Top" Width="980">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="215*"/>
+            <ColumnDefinition Width="45*"/>
+            <ColumnDefinition Width="208*"/>
+            <ColumnDefinition Width="294*"/>
+            <ColumnDefinition Width="165*"/>
+            <ColumnDefinition Width="23*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="111*"/>
+            <RowDefinition Height="38*"/>
+            <RowDefinition Height="29*"/>
+            <RowDefinition Height="241*"/>
+            <RowDefinition Height="47*"/>
+        </Grid.RowDefinitions>
+        <Rectangle Fill="Black" HorizontalAlignment="Left" Height="90" Stroke="Black" VerticalAlignment="Top" Width="980" Grid.ColumnSpan="7"/>
+        <Rectangle HorizontalAlignment="Left" Height="360" Margin="0,90,0,0" Stroke="Black" VerticalAlignment="Top" Width="980" Grid.RowSpan="5" Grid.ColumnSpan="7">
             <Rectangle.Fill>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black"/>
@@ -19,22 +35,21 @@
             </Rectangle.Fill>
         </Rectangle>
 
-
-        <TextBox x:Name="tbUserId" HorizontalAlignment="Center" Margin="0,44,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <Label Content="DRWALVOD" HorizontalAlignment="Left" Margin="10,22,0,0" VerticalAlignment="Top" Foreground="#FFE50914" FontWeight="Bold" FontSize="36" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" FontFamily="TINspireKeysChinese" Width="295" Background="{x:Null}">
+        <Label Content="DRWALVOD" HorizontalAlignment="Left" Margin="10,22,0,0" VerticalAlignment="Top" Foreground="#FFE50914" FontWeight="Bold" FontSize="36" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" FontFamily="TINspireKeysChinese" Width="295" Background="{x:Null}" Grid.ColumnSpan="4">
             <Label.Effect>
                 <DropShadowEffect/>
             </Label.Effect>
         </Label>
-        <Button x:Name="btnUserSettings"  HorizontalAlignment="Left" Height="70" Margin="884,10,0,0" VerticalAlignment="Top" Width="70" Click="btnUserSettings_Click">
+        <Button x:Name="btnUserSettings"  HorizontalAlignment="Left" Height="70" Margin="92,10,0,0" VerticalAlignment="Top" Width="70" Click="btnUserSettings_Click" Grid.Column="5">
             <Button.Background>
                 <ImageBrush ImageSource="Resources/Drwalvod-avatar.png"/>
             </Button.Background>
         </Button>
-        <Label x:Name="tb_firstname" Content="firstname" HorizontalAlignment="Left" Margin="555,23,0,0" VerticalAlignment="Top" Width="304" Height="45" HorizontalContentAlignment="Right" VerticalContentAlignment="Top" Foreground="White" FontSize="36" FontFamily="Arial Rounded MT Bold" FontStretch="Normal" FontStyle="Italic"/>
-        <ListBox x:Name="lb_Movies" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="28,175,26,50" Background="{x:Null}" BorderBrush="Black" BorderThickness="3,3,3,3" Foreground="White" FontSize="24" FontWeight="Normal" FontStyle="Italic" FontFamily="Tahoma"/>
-        <TextBox x:Name="tb_SearchMovie" HorizontalAlignment="Left" Margin="94,112,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="211" Background="{x:Null}" BorderThickness="3,3,3,3" BorderBrush="#FFB1B1B1" Height="37" Foreground="White" FontSize="24" FontFamily="Bahnschrift SemiBold SemiCondensed" FontWeight="Normal" FontStyle="Normal" TextChanged="TextChanged" GotFocus="Searchbox_GotFocus"/>
-        <ComboBox x:Name="cb_Genre" HorizontalAlignment="Left" Margin="339,112,0,0" VerticalAlignment="Top" Width="211" Height="37" Background="{x:Null}" BorderThickness="3,3,3,3" FontFamily="Bahnschrift SemiBold" FontSize="22" Foreground="Black" SelectionChanged="GenreBox_SelectionChanged"/>
+        <Label x:Name="tb_firstname" Content="firstname" HorizontalAlignment="Left" Margin="57,23,0,0" VerticalAlignment="Top" Width="304" Height="45" HorizontalContentAlignment="Right" VerticalContentAlignment="Top" Foreground="White" FontSize="36" FontFamily="Arial Rounded MT Bold" FontStretch="Normal" FontStyle="Italic" Grid.Column="4" Grid.ColumnSpan="2"/>
+        <ListBox x:Name="lb_Movies" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="28,26,3,3" Background="{x:Null}" BorderBrush="Black" BorderThickness="3,3,3,3" Foreground="White" FontSize="24" FontWeight="Normal" FontStyle="Italic" FontFamily="Tahoma" Grid.RowSpan="2" Grid.ColumnSpan="6" Grid.Row="2"/>
+        <TextBox x:Name="tb_SearchMovie" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="211" Background="{x:Null}" BorderThickness="3,3,3,3" BorderBrush="#FFB1B1B1" Height="37" Foreground="White" FontSize="24" FontFamily="Bahnschrift SemiBold SemiCondensed" FontWeight="Normal" FontStyle="Normal" TextChanged="TextChanged" GotFocus="Searchbox_GotFocus" Grid.Column="1" Grid.Row="1"/>
+        <ComboBox x:Name="cb_Genre" HorizontalAlignment="Left" Margin="37,0,0,0" VerticalAlignment="Center" Width="211" Height="37" Background="{x:Null}" BorderThickness="3,3,3,3" FontFamily="Bahnschrift SemiBold" FontSize="22" Foreground="Black" SelectionChanged="GenreBox_SelectionChanged" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1"/>
+        <Button x:Name="btn_Subscriptions" Content="Subscriptions" HorizontalAlignment="Left" Margin="290,0,0,0" VerticalAlignment="Center" Height="37" Width="166" Background="{x:Null}" Foreground="White" FontFamily="Cascadia Code SemiBold" FontSize="20" BorderThickness="3,3,3,3" Click="btn_Subscriptions_Click" Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="1"/>
 
 
     </Grid>

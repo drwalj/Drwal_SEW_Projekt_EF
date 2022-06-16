@@ -37,7 +37,7 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         public ActionResult<List<Movie>> GetMoviesWithGenreAndTitle(string title, string genre)
         {
             Console.WriteLine($"Recieved request for: GetMovieWithGenre({title}{genre})...");
-            if (String.IsNullOrWhiteSpace(title))
+            if (String.IsNullOrWhiteSpace(title) && genre != "All")
                 return Ok(context.Movie.Where(a=>a.type.Contains(genre)));
 
             if (genre == "All")
@@ -50,12 +50,15 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         public ActionResult<List<Movie>> GetMovieWithGenre(string genre)
         {
             Console.WriteLine($"Recieved request for: GetMovieWithGenre({genre})...");
+            if (genre == "All")
+                return Ok(context.Movie);
             return Ok(context.Movie.Where(a => a.type == genre));
         }
 
         [HttpGet("clients/{id}")]
         public ActionResult<Client> GetClientWithId(int id)
         {
+
             Console.WriteLine($"Recieved request for: GetClientWithId({id})");
             Client suspect = context.Client.FirstOrDefault(a => a.client_id == id);
             if (suspect!=null)
@@ -66,7 +69,25 @@ namespace Drwal_SEW_Projekt_EF.Controllers
 
             Console.WriteLine("Client NOT Found!");
             return NotFound($"Client {id} not found...");
-            
+
+        }
+
+        [HttpGet("payments")]
+        public ActionResult<IEnumerable<string>> GetAllPayments()
+        {
+            Console.WriteLine($"Recieved request for: GetAllPayments()");
+            IEnumerable<string> paymentMethods = context.Order.Select(a => a.payment).Distinct();
+
+            return Ok(paymentMethods);
+
+        }
+        [HttpGet("deliveries")]
+        public ActionResult<IEnumerable<string>> GetAllDeliveries()
+        {
+            Console.WriteLine($"Recieved request for: GetAllPayments()");
+            IEnumerable<string> deliveryMethods = context.Order.Select(a => a.shipment).Distinct();
+
+            return Ok(deliveryMethods);
 
         }
 
@@ -89,7 +110,7 @@ namespace Drwal_SEW_Projekt_EF.Controllers
 
         }
 
-        [HttpPatch("clients/{clientId}")]
+        [HttpPatch("clients/patch/{clientId}")]
         public async Task<ActionResult> PatchClient([FromBody] Client meinNeuerClient, int clientId)
         {
             Console.WriteLine($"Recieved Request for: PatchClient({clientId})");
@@ -98,39 +119,33 @@ namespace Drwal_SEW_Projekt_EF.Controllers
             if (clientToPatch == null)
             {
                 return NotFound($"Client with Id {clientId} not found!");
-
             }
 
-            clientToPatch.client_id = clientId;
-            clientToPatch.firstname = meinNeuerClient.firstname;
-            clientToPatch.lastname = meinNeuerClient.lastname;
             clientToPatch.address = meinNeuerClient.address;
-            clientToPatch.Order = meinNeuerClient.Order;
             clientToPatch.dateofbirth = meinNeuerClient.dateofbirth;
             clientToPatch.postalcode = meinNeuerClient.postalcode;
 
             await context.SaveChangesAsync();
             return Ok("Sucessfully Patched Client!");
-
         }
 
 
         [HttpPost("clients/{clientid}/orders")]
-        public async Task<ActionResult> PostNewOrder([FromBody] Order myNewOrder, int clientId)
+        public async Task<ActionResult> PostNewOrder([FromBody] Order myNewOrder, int clientid)
         {
-            var clientXorder = context.Client.Where(a=> a.client_id.Equals(clientId)).FirstOrDefault();
-            Console.WriteLine($"Recieved request for:  PostNewOrder for ClientId {clientId}");
-            if (clientXorder == null)
+            Console.WriteLine($"Recieved request for:  PostNewOrder for ClientId {clientid}");
+            Client suspect = context.Client.FirstOrDefault(a=> a.client_id == clientid);
+            if (suspect == null)
             {
-                await context.SaveChangesAsync();
-                return NotFound($"Client with Id {clientId} not found");
+                return NotFound($"Client with Id {clientid} not found");
             }
 
-            clientXorder.Order.Add(myNewOrder);
-            return Ok("Sucessfully Added Order!");  
+            myNewOrder.order_id = (context.Order.Select(a => a.order_id).Max()+1);
+            context.Client.FirstOrDefault(a => a.client_id == clientid).Order.Add(myNewOrder);
             
-
+            return Ok("Sucessfully Added Order!");
         }
+
 
 
         [HttpPost("clients")]
@@ -151,15 +166,15 @@ namespace Drwal_SEW_Projekt_EF.Controllers
         }
 
         
-        [HttpDelete("clients/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult> DeleteClient(int id)
         {
             Client suspect = context.Client.FirstOrDefault(a => a.client_id == id);
 
-            if (suspect != default)
+            if (suspect != null)
             {
                 context.Client.Remove(suspect);
-                await context.SaveChangesAsync();
+     
                 return Ok("Sucessfully removed Client (he was removed on your behalf... he is gone now... no coming back... have you thought about his family?... why would you do that to them?...)");
 
             }

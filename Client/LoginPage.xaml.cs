@@ -45,7 +45,7 @@ namespace WPF_Client
 
         }
 
-        private async void Registrieren_Button(object sender, RoutedEventArgs e)
+        public async void Registrieren_Button(object sender, RoutedEventArgs e)
         {
             var result = await RestHelper.PostNewClientAsync(tbFirstname.Text, tbLastname.Text);
 
